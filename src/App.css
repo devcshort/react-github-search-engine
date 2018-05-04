@@ -1,0 +1,24 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #78909C;
+  align-items: center;
+  justify-content: center;
+}
+
+.App .formContainer {
+  background-color: #FFFFFF;
+  padding: 15px;
+}
+
+.profile {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.profile img {
+  max-width: 150px;
+  border-radius: 100%;
+  border: 1px solid #838383;
+}
