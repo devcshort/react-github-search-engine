@@ -1,58 +1,50 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 // import custom components
-import Profile from './components/Profile';
-import Footer from './components/Footer';
+import Profile from './Components/Profile/Profile';
+import Footer from './Components/Footer/Footer';
 // import material-ui components
-import TextField from 'material-ui/TextField';
-import FlatButton from 'material-ui/FlatButton';
-import Loader from 'material-ui/CircularProgress';
-// import stylesheet
-import './App.css';
+import { TextField, Button, CircularProgress as Loader } from '@material-ui/core';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      image: '',
-      searched: false,
-      repos: [],
-      loading: false
-    }
+  state = {
+    username: '',
+    image: '',
+    searched: false,
+    repos: [],
+    loading: false
   }
 
-  onFormSubmitHandler = (e) => {
+  onFormSubmit = (e) => {
     e.preventDefault();
+
     this.setState({
       loading: true
     });
-    fetch(`https://api.github.com/users/${this.state.username}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        fetch(json.repos_url)
-          .then((repoRes) => {
-            return repoRes.json();
-          })
-          .then((repoJson) => {
-            this.setState({
-              loading: false,
-              repos: repoJson,
-              image: json.avatar_url,
-              searched: true
-            });
-          })
-          .catch((repoErr) => {
-            console.log(repoErr);
-          })
-      })
-      .catch((err) => {
-        console.log(err);
+
+    var avatar_url;
+
+    axios.get(`https://api.github.com/users/${this.state.username}`)
+    .then(res => {
+      avatar_url = res.data.avatar_url;
+      return axios.get(res.data.repos_url);
+    })
+    .then(res => {
+      this.setState({
+        loading: false,
+        repos: res.data,
+        image: avatar_url,
+        searched: true
       });
+    })
+    .catch(() => {
+      this.setState({
+        loading: false
+      });
+    });
   }
 
-  onUsernameChangeHandler = (e) => {
+  onUsernameChange = e => {
     this.setState({
       searched: false,
       username: e.target.value
@@ -63,29 +55,40 @@ class App extends Component {
     return (
       <div className="App">
         <div className="formContainer">
-          <h1>Github Searcher</h1>
-          <form onSubmit={this.onFormSubmitHandler}>
+          <h1 style={{ marginTop: 0 }}>{ process.env.REACT_APP_NAME }</h1>
+          <form
+            style={{ alignItems: "flex-end", display: "flex" }}
+            onSubmit={this.onFormSubmit}
+          >
             <TextField
-              onChange={this.onUsernameChangeHandler}
+              style={{ flex: 1 }}
+              onChange={this.onUsernameChange}
               type="text"
-              floatingLabelText="Enter a Github username"
+              label="Enter a Github username..."
             />
-            <FlatButton label="Search" type="submit" />
+            <Button type="submit">Search</Button>
           </form>
 
-          {this.state.loading ? <Loader style={{display: "block", margin: "15px auto"}} /> : null}
+          {
+            this.state.loading
+              ? <Loader style={{ display: "block", margin: "15px auto" }} />
+              : null
+          }
 
-          {this.state.searched ?
-          <Profile
-            username={this.state.username}
-            image={this.state.image}
-            repos={this.state.repos}
-          /> : null}
-
+          {
+            this.state.searched
+              && (
+                <Profile
+                  username={this.state.username}
+                  image={this.state.image}
+                  repos={this.state.repos}
+                />
+              )
+          }
         </div>
         <Footer />
       </div>
-    );
+    )
   }
 }
 
