@@ -1,29 +1,48 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
 
 html {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #78909C;
+  background-color: #78c4d4;
   align-items: center;
   justify-content: center;
 }
 
 .App .formContainer {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   padding: 15px;
+  max-height: 90vh;
+  border-radius: 5px;
+  overflow: auto;
 }
-
+.formContainer h1 {
+  color: #333;
+  margin-top: 0;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+}
+.profileContainer {
+  height: 10px;
+}
 .profile {
   text-align: center;
   margin-top: 15px;
+}
+.profile h2 {
+  color: #333;
 }
 
 .profile img {
